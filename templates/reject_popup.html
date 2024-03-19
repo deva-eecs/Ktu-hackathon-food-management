@@ -1,0 +1,17 @@
+<!-- accept_popup.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accept Donation</title>
+</head>
+<body>
+    <h1>Accept Donation</h1>
+    <p>Do you want to accept this donation?</p>
+    <form action="{{ url_for('accept_donation', donor_index=donor_index) }}" method="post">
+        <input type="submit" value="Accept">
+    </form>
+</body>
+</html>

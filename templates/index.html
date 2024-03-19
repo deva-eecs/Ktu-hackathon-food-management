@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donations and Requests</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            color: #3498db;
+        }
+
+        h2 {
+            color: #2ecc71;
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #2185c5;
+        }
+
+        #notifications-list {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            list-style-type: none;
+        }
+
+        #notifications-list li {
+            margin-bottom: 5px;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Donations and Requests</h1>
+
+    <h2>Donations</h2>
+    <ul>
+        {% for donation in donations %}
+            <li>
+                {{ donation.donor_name }} - {{ donation.food_type }} - {{ donation.quantity }} - {{ donation.location }} - {{ donation.contact_info }}
+                {% if donation.pending %}
+                    <a href="{{ url_for('accept_popup', donor_index=loop.index0) }}">Accept</a>
+                    <a href="{{ url_for('reject_popup', donor_index=loop.index0) }}">Reject</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Requests</h2>
+    <ul>
+        {% for request in requests %}
+            <li>{{ request.receiver_name }} - {{ request.location }} - {{ request.quantity }} - {{ request.contact_info }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Notifications</h2>
+    <ul id="notifications-list">
+        {% for notification in notifications %}
+            <li>{{ notification }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('donate') }}">Donate</a>
+    <a href="{{ url_for('request_food') }}">Request Food</a>
+    <a href="{{ url_for('view_notifications') }}">View Notifications</a>
+
+    <script>
+        // JavaScript function to update quantities and display notifications
+        function updateQuantitiesAndDisplayNotifications() {
+            var donations = {{ donations | tojson | safe }};
+            var requests = {{ requests | tojson | safe }};
+            var notificationsList = document.getElementById('notifications-list');
+
+            requests.forEach(function(request) {
+                var matchingDonation = donations.find(function(donation) {
+                    return donation.location === request.location;
+                });
+
+                if (matchingDonation) {
+                    var updatedQuantity = matchingDonation.quantity - request.quantity;
+                    matchingDonation.quantity = updatedQuantity;
+
+                    // Update the notification list
+                    var notification = document.createElement('li');
+                    notification.textContent = 'Updated quantity for ' + matchingDonation.donor_name +
+                        ': ' + matchingDonation.quantity + ' remaining';
+                    notificationsList.appendChild(notification);
+                }
+            });
+        }
+
+        // Call the function on page load
+        window.onload = updateQuantitiesAndDisplayNotifications;
+    </script>
+</body>
+</html>

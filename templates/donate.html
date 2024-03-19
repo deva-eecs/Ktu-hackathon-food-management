@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #343a40;
+        }
+
+        form {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Donor Interface</h1>
+
+    <form method="post" onsubmit="showLocationOnGoogleMaps()">
+        {{ form.hidden_tag() }}
+        <label for="donor_name">{{ form.donor_name.label }}</label>
+        {{ form.donor_name(size=32) }}<br>
+        <label for="food_type">{{ form.food_type.label }}</label>
+        {{ form.food_type(size=32) }}<br>
+        <label for="quantity">{{ form.quantity.label }}</label>
+        {{ form.quantity(size=32) }}<br>
+        <label for="expiration_date">{{ form.expiration_date.label }}</label>
+        {{ form.expiration_date(size=32) }}<br>
+        <label for="location">{{ form.location.label }}</label>
+        {{ form.location(size=32) }}<br>
+        <label for="contact_info">{{ form.contact_info.label }}</label>
+        {{ form.contact_info(size=32) }}<br>
+        {{ form.submit() }}
+    </form>
+
+    <script>
+        function showLocationOnGoogleMaps() {
+            var locationInput = document.getElementById('location');
+            var locationValue = locationInput.value;
+            var googleMapsLink = 'https://www.google.com/maps/place/' + encodeURIComponent(locationValue);
+            window.open(googleMapsLink, '_blank');
+            return false; // Prevent form submission
+        }
+    </script>
+</body>
+</html>
